@@ -1,0 +1,11 @@
+name: repo-admin
+description: Automated repository administrator
+author: mattsb42
+inputs:
+    config-file:
+        description: Location of config file in repo
+        default: .github/settings.yml
+        required: false
+runs:
+    using: docker
+    image: Dockerfile
