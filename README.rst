@@ -23,16 +23,16 @@ but is designed to solve two issues with that app:
    Granting these permissions is not always possible,
    and running your own app is extra overhead that I would rather not have to deal with.
 
-    * `repo-admin` solves this problem by running as a GitHub Action
-      using the credentials that *you* provide.
+   * `repo-admin` solves this problem by running as a GitHub Action
+     using the credentials that *you* provide.
 
 #. **Debugging** : `Probot Settings`_ lacks a feedback mechanism to let you know
    when it ran and what happened.
    This is especially frustrating if you are attempting to debug a bad config,
    when the only feedback you can get is that nothing happened.
 
-    * Because `repo-admin` runs as a GitHub Action,
-      you can see exactly when it ran and what happened.
+   * Because `repo-admin` runs as a GitHub Action,
+     you can see exactly when it ran and what happened.
 
 
 Because it runs as a GitHub Action,
