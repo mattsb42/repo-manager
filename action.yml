@@ -2,6 +2,9 @@ name: repo-admin
 description: Automated repository administrator
 author: mattsb42
 inputs:
+    github-token:
+        description: GitHub authentication token
+        required: true
     config-file:
         description: Location of config file in repo
         default: .github/settings.yml
