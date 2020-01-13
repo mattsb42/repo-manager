@@ -6,9 +6,9 @@ on:
 
 jobs:
     cleanup:
-    runs-on: ubuntu-latest
-    steps:
-        -   name: clean up source branch
-            uses: jessfraz/branch-cleanup-action@master
-            env:
-                GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: clean up source branch
+                uses: jessfraz/branch-cleanup-action@master
+                env:
+                    GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}

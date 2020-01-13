@@ -50,10 +50,18 @@ branches:
                 dismiss_stale_reviews: true
             restrictions: null
             enforce_admins: true
-            required_status_checks: null
+            required_status_checks:
+                strict: true
+                contexts:
+                    - static analysis / analysis (bandit)
+                    - local tests
     -   name: master
         protection:
             required_pull_request_reviews: null
             restrictions: null
             enforce_admins: true
-            required_status_checks: null
+            required_status_checks:
+                strict: true
+                contexts:
+                    - static analysis / analysis (bandit)
+                    - local tests

@@ -13,6 +13,7 @@ def github_actions_environment(monkeypatch):
     monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo-name")
 
 
+@pytest.mark.skip(reason="needs mocks")
 def test_pytestmark(monkeypatch):
     monkeypatch.setenv("INPUT_CONFIG-FILE", vector_file("settings.yml"))
 
