@@ -1,0 +1,17 @@
+# This workflow applies repository settings once they land in master.
+name: Apply repository settings
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    apply-settings:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v2
+            -   uses: mattsb42/repo-admin@master
+                with:
+                    github-token: ${{ secrets.ADMIN_TOKEN }}
+                    debug: true

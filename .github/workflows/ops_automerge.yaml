@@ -1,0 +1,53 @@
+# This workflow automatically merges pull requests when they are ready.
+name: automerge PRs
+
+on:
+    pull_request:
+        types:
+            - assigned
+            - labeled
+            - opened
+            - edited
+            - reopened
+            - synchronize
+            - ready_for_review
+            - unlocked
+            - review_requested
+    pull_request_review:
+        types:
+            - submitted
+            - edited
+
+jobs:
+    # Auto-approve anything to development as long as it meets the merge requirements
+    automerge-to-development:
+        if: github.base_ref == 'development'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: automerge
+                uses: pascalgn/automerge-action@v0.6.1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}
+                    MERGE_LABELS: "!block merge"
+                    MERGE_METHOD: squash
+                    MERGE_COMMIT_MESSAGE: automatic
+                    # Retry every 10s for 30m
+                    MERGE_RETRIES: 180
+                    MERGE_RETRY_SLEEP: 10
+    # Only auto-approve PRs to master if they came from development in this fork
+    automerge-to-master:
+        if: github.head_ref == 'development' && github.base_ref == 'master'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: automerge
+                uses: pascalgn/automerge-action@v0.6.1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}
+                    MERGE_LABELS: automerge,!block merge
+                    MERGE_METHOD: merge
+                    MERGE_COMMIT_MESSAGE: automatic
+                    # Don't auto-merge from forks
+                    MERGE_FORKS: false
+                    # Retry every 10s for 30m
+                    MERGE_RETRIES: 180
+                    MERGE_RETRY_SLEEP: 10

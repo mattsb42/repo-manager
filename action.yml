@@ -9,6 +9,9 @@ inputs:
         description: Location of config file in repo
         default: .github/settings.yml
         required: false
+    debug:
+        description: Enables debug logging if set
+        required: false
 runs:
     using: docker
     image: Dockerfile

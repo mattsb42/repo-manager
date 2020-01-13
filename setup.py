@@ -67,9 +67,9 @@ setup(
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: Implementation :: CPython"
-    ]
+        "Programming Language :: Python :: Implementation :: CPython",
+    ],
+    entry_points=dict(console_scripts=["repo-admin=repo_admin:cli"]),
 )
