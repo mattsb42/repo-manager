@@ -52,7 +52,8 @@ def apply(request: HandlerRequest):
             del new_teams[team.name]
 
     # Apparently we can't just get the team by name :(
-    org_teams = {team.slug: team for team in request.organization.get_teams()}
+    # Also, since PyGithub lacks type stubs, mypy things it's an Any
+    org_teams = {team.slug: team for team in request.organization.get_teams()}  # type: ignore
 
     for team_data in new_teams.values():
         _LOGGER.info(
