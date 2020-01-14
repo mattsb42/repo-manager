@@ -33,7 +33,7 @@ jobs:
                     MERGE_COMMIT_MESSAGE: automatic
                     # Retry every 10s for 30m
                     MERGE_RETRIES: 180
-                    MERGE_RETRY_SLEEP: 10
+                    MERGE_RETRY_SLEEP: 10000
     # Only auto-approve PRs to master if they came from development in this fork
     automerge-to-master:
         if: github.head_ref == 'development' && github.base_ref == 'master'
@@ -43,11 +43,11 @@ jobs:
                 uses: pascalgn/automerge-action@v0.6.1
                 env:
                     GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}
-                    MERGE_LABELS: automerge,!block merge
+                    MERGE_LABELS: "!block merge"
                     MERGE_METHOD: merge
                     MERGE_COMMIT_MESSAGE: automatic
                     # Don't auto-merge from forks
                     MERGE_FORKS: false
                     # Retry every 10s for 30m
                     MERGE_RETRIES: 180
-                    MERGE_RETRY_SLEEP: 10
+                    MERGE_RETRY_SLEEP: 10000
