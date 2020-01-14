@@ -43,7 +43,7 @@ jobs:
                 uses: pascalgn/automerge-action@v0.6.1
                 env:
                     GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}
-                    MERGE_LABELS: automerge,!block merge
+                    MERGE_LABELS: "!block merge"
                     MERGE_METHOD: merge
                     MERGE_COMMIT_MESSAGE: automatic
                     # Don't auto-merge from forks
