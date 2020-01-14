@@ -7,7 +7,7 @@ disable =
     too-few-public-methods,  # does not allow data classes
     no-else-return,  # we omit this on purpose for brevity where it would add no value
     attribute-defined-outside-init,  # breaks with attrs_post_init
-    redefined-outer-name,  # we do this on purpose in multiple places
+    duplicate-code,  # many of the group handler modules have similar boilerplate
 
 [BASIC]
 # Allow function names up to 50 characters

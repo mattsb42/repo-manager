@@ -1,17 +1,17 @@
-"""Handler for applying labels settings.
-
-
-"""
+"""Handler for applying labels settings."""
 import logging
 from typing import Any, Dict
 
+from github.Organization import Organization
 from github.Repository import Repository
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(repo: Repository, data: Any):
+def apply(
+    repo: Repository, org: Organization, data: Any
+):  # pylint: disable=unused-argument
     """Manage labels.
 
     https://developer.github.com/v3/issues/labels/#create-a-label
@@ -37,16 +37,12 @@ def apply(repo: Repository, data: Any):
     _LOGGER.info("Applying branch label settings")
     _LOGGER.info("Labels configuration:\n%s", data)
 
+    # handle label renaming
+    # https://github.com/mattsb42/repo-admin/issues/18
+
     new_labels: Dict[str, Dict[str, str]] = {}
     for label in data:
         label["color"] = str(label["color"]).replace("#", "")
-        # TODO: Need to handle both cases where this is the renaming update
-        #  AND for subsequent updates.
-        #  Will probably require a second structure of "possible hanging labels".
-        # if "oldname" in label:
-        #     label["new_name"] = label["name"]
-        #     label["name"] = label["oldname"]
-        #     del label["oldname"]
         new_labels[label["name"]] = label
 
     # Delete or update any existing labels
