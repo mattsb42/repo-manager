@@ -1,5 +1,5 @@
 repository:
-    description: Manage your GitHub repository via source control!
+    description: Manage your GitHub repository with source control!
     has_wiki: false
 
     default_branch: development
@@ -41,6 +41,10 @@ labels:
     -   name: wontfix
         color: ffffff
         description: This will not be worked on
+    # Custom labels
+    -   name: next release
+        color: 8D09F3
+        description: Required for next release
 
 branches:
     -   name: development
@@ -53,8 +57,12 @@ branches:
             required_status_checks:
                 strict: true
                 contexts:
+                    # Operations
+                    - route-pull-request
                     # Static Analysis
                     - analysis (bandit)
+                    - analysis (mypy)
+                    - analysis (lint)
                     # Linux
                     - tests (ubuntu-latest, 3.7, x64, local)
                     - tests (ubuntu-latest, 3.8, x64, local)
@@ -80,9 +88,11 @@ branches:
                 strict: false
                 contexts:
                     # Operations
-                    - send-to-develop
+                    - route-pull-request
                     # Static Analysis
                     - analysis (bandit)
+                    - analysis (mypy)
+                    - analysis (lint)
                     # Linux
                     - tests (ubuntu-latest, 3.7, x64, local)
                     - tests (ubuntu-latest, 3.8, x64, local)

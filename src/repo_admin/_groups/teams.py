@@ -12,15 +12,7 @@ __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def _organization_from_repo(repo: Repository) -> Organization:
-    # TODO: More bad things here, though this one is me being lazy.
-    headers, data = repo._requester.requestJsonAndCheck(
-        "GET", "/orgs/" + repo.owner.login
-    )
-    return Organization(repo._requester, headers, data, completed=True)
-
-
-def apply(repo: Repository, data: Any):
+def apply(repo: Repository, org: Organization, data: Any):
     """Manage team access.
 
     .. code-block:: yaml
@@ -61,7 +53,6 @@ def apply(repo: Repository, data: Any):
 
             del new_teams[team.name]
 
-    org = _organization_from_repo(repo)
     for team_data in new_teams.values():
         _LOGGER.info(
             "Adding new team access for team '%s' with %s permissions.",

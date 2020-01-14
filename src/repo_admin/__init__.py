@@ -1,7 +1,7 @@
-"""repo-admin."""
+"""repo-admin: Manage your GitHub repository with source control."""
 import argparse
 import logging
-from typing import Iterable
+from typing import Sequence
 
 from ._groups import apply_config, parse_config
 from ._util import load_context, load_inputs
@@ -12,6 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def _arguments() -> argparse.ArgumentParser:
+    """Prepare the argument parser."""
     args = argparse.ArgumentParser(description="")
     args.add_argument("--version", action="version", version=__version__)
     args.add_argument(
@@ -25,6 +26,7 @@ def _arguments() -> argparse.ArgumentParser:
 
 
 def _setup_logger(verbosity: int, debug: bool):
+    """Set up logging."""
     formatter = logging.Formatter(
         "%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s"
     )
@@ -37,7 +39,8 @@ def _setup_logger(verbosity: int, debug: bool):
     logger.addHandler(handler)
 
 
-def cli(raw_args: Iterable[str] = None):
+def cli(raw_args: Sequence[str] = None):
+    """CLI entry point."""
 
     parser = _arguments()
     parsed = parser.parse_args(args=raw_args)

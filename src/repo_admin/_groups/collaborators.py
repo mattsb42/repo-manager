@@ -2,6 +2,7 @@
 import logging
 from typing import Any
 
+from github.Organization import Organization
 from github.Repository import Repository
 
 from .._util import permission_to_string
@@ -10,7 +11,9 @@ __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(repo: Repository, data: Any):
+def apply(
+    repo: Repository, org: Organization, data: Any
+):  # pylint: disable=unused-argument
     """Manage collaborators.
 
     .. code-block:: yaml

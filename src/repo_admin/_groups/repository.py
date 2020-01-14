@@ -5,13 +5,16 @@ See https://developer.github.com/v3/repos/#edit for all available settings.
 import logging
 from typing import Any
 
+from github.Organization import Organization
 from github.Repository import Repository
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(repo: Repository, data: Any):
+def apply(
+    repo: Repository, org: Organization, data: Any
+):  # pylint: disable=unused-argument
     """Manage repository-level settings.
 
     .. code-block:: yaml

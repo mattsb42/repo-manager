@@ -1,3 +1,4 @@
+"""Functional test suite for ``repo_admin``."""
 import pytest
 
 import repo_admin

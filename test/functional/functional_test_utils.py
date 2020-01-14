@@ -1,3 +1,4 @@
+"""Helper utilities for functional tests."""
 import os
 from pathlib import Path
 
