@@ -3,18 +3,14 @@
 See https://developer.github.com/v3/repos/#edit for all available settings.
 """
 import logging
-from typing import Any
 
-from github.Organization import Organization
-from github.Repository import Repository
+from .._util import HandlerRequest
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(
-    repo: Repository, org: Organization, data: Any
-):  # pylint: disable=unused-argument
+def apply(request: HandlerRequest):
     """Manage repository-level settings.
 
     .. code-block:: yaml
@@ -67,6 +63,6 @@ def apply(
 
     """
     _LOGGER.info("Applying repository settings")
-    _LOGGER.info("Repository configuration:\n%s", data)
+    _LOGGER.info("Repository configuration:\n%s", request.data)
 
-    repo.edit(**data)
+    request.repository.edit(**request.data)

@@ -3,16 +3,14 @@
 https://developer.github.com/v3/teams/#add-or-update-team-repository
 """
 import logging
-from typing import Any
 
-from github.Organization import Organization
-from github.Repository import Repository
+from .._util import HandlerRequest
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(repo: Repository, org: Organization, data: Any):
+def apply(request: HandlerRequest):
     """Manage team access.
 
     .. code-block:: yaml
@@ -26,11 +24,11 @@ def apply(repo: Repository, org: Organization, data: Any):
 
     """
     _LOGGER.info("Applying branch protection settings")
-    _LOGGER.info("Teams configuration:\n%s", data)
+    _LOGGER.info("Teams configuration:\n%s", request.data)
 
-    new_teams = {team["name"]: team for team in data}
+    new_teams = {team["name"]: team for team in request.data}
 
-    for team in repo.get_teams():
+    for team in request.repository.get_teams():
         current_permissions = team.permission
 
         if team.name not in new_teams:
@@ -39,7 +37,7 @@ def apply(repo: Repository, org: Organization, data: Any):
                 team.name,
                 current_permissions,
             )
-            team.remove_from_repos(repo)
+            team.remove_from_repos(request.repository)
         else:
             new_permissions = new_teams[team.name]["permission"]
             if current_permissions != new_permissions:
@@ -49,9 +47,12 @@ def apply(repo: Repository, org: Organization, data: Any):
                     current_permissions,
                     new_permissions,
                 )
-                team.set_repo_permission(repo, new_permissions)
+                team.set_repo_permission(request.repository, new_permissions)
 
             del new_teams[team.name]
+
+    # Apparently we can't just get the team by name :(
+    org_teams = {team.slug: team for team in request.organization.get_teams()}
 
     for team_data in new_teams.values():
         _LOGGER.info(
@@ -59,5 +60,10 @@ def apply(repo: Repository, org: Organization, data: Any):
             team_data["name"],
             team_data["permission"],
         )
-        team = org.get_team_by_slug(team_data["name"])
-        team.set_repo_permission(repo, team_data["permission"])
+        name = team_data["name"]
+        try:
+            team = org_teams[name]
+        except KeyError:
+            raise Exception(f"Unknown team '{name}")
+
+        team.set_repo_permission(request.repository, team_data["permission"])
