@@ -9,6 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: clean up source branch
+                if: github.head_ref != "development"
                 uses: jessfraz/branch-cleanup-action@master
                 env:
                     GITHUB_TOKEN: ${{ secrets.WRITE_TOKEN }}
