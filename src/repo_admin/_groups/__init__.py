@@ -4,8 +4,9 @@ from functools import partial
 from typing import Any, Callable, Dict
 
 import yaml
+from github.GithubException import UnknownObjectException
 
-from .._util import Inputs, RepoContext
+from .._util import HandlerRequest, Inputs, RepoContext
 
 __all__ = ("parse_config", "apply_config")
 
@@ -29,9 +30,16 @@ def parse_config(inputs: Inputs, context: RepoContext) -> Dict[str, Callable[[],
         raw_config = yaml.safe_load(raw)
 
     repository = inputs.github.get_repo(full_name_or_id=f"{context.owner}/{context.repo}")
-    organization = inputs.github.get_organization(context.owner)
+    try:
+        organization = inputs.github.get_organization(context.owner)
+    except UnknownObjectException:
+        organization = None
+
     return {
-        group: partial(_load_handler(group), repository, organization, data)
+        group: partial(
+            _load_handler(group),
+            HandlerRequest(data=data, repository=repository, organization=organization),
+        )
         for group, data in raw_config.items()
     }
 

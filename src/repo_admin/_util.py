@@ -1,11 +1,30 @@
 """Utility helpers."""
 import os
 from dataclasses import dataclass
+from typing import Any, Optional
 
 from github import Github
+from github.Organization import Organization
 from github.Permissions import Permissions
+from github.Repository import Repository
 
-__all__ = ("load_inputs", "load_context", "Inputs", "RepoContext", "permission_to_string")
+__all__ = (
+    "load_inputs",
+    "load_context",
+    "Inputs",
+    "RepoContext",
+    "permission_to_string",
+    "HandlerRequest",
+)
+
+
+@dataclass
+class HandlerRequest:
+    """Values for a handler request."""
+
+    repository: Repository
+    data: Any
+    organization: Optional[Organization] = None
 
 
 @dataclass

@@ -1,19 +1,13 @@
 """Handler for applying collaborators settings."""
 import logging
-from typing import Any
 
-from github.Organization import Organization
-from github.Repository import Repository
-
-from .._util import permission_to_string
+from .._util import HandlerRequest, permission_to_string
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(
-    repo: Repository, org: Organization, data: Any
-):  # pylint: disable=unused-argument
+def apply(request: HandlerRequest):
     """Manage collaborators.
 
     .. code-block:: yaml
@@ -34,23 +28,23 @@ def apply(
     """
 
     _LOGGER.info("Applying branch collaborator settings")
-    _LOGGER.info("Collaborators configuration:\n%s", data)
+    _LOGGER.info("Collaborators configuration:\n%s", request.data)
 
-    new_collaborators = {user["username"]: user for user in data}
+    new_collaborators = {user["username"]: user for user in request.data}
 
-    for collaborator in repo.get_collaborators():
+    for collaborator in request.repository.get_collaborators():
         current_permissions = permission_to_string(collaborator.permissions)
 
         if (
             collaborator.login not in new_collaborators
-            and collaborator.login != repo.owner
+            and collaborator.login != request.repository.owner
         ):
             _LOGGER.info(
                 "Collaborator '%s' found with %s permissions not in config. Removing access for user.",
                 collaborator.login,
                 current_permissions,
             )
-            repo.remove_from_collaborators(collaborator)
+            request.repository.remove_from_collaborators(collaborator)
         else:
             new_permissions = new_collaborators[collaborator.login]["permission"]
 
@@ -62,8 +56,10 @@ def apply(
                     current_permissions,
                     new_permissions,
                 )
-                repo.remove_from_collaborators(collaborator)
-                repo.add_to_collaborators(collaborator, permission=new_permissions)
+                request.repository.remove_from_collaborators(collaborator)
+                request.repository.add_to_collaborators(
+                    collaborator, permission=new_permissions
+                )
 
             new_collaborators.pop(collaborator.login)
 
@@ -73,6 +69,6 @@ def apply(
             collaborator["username"],
             collaborator["permission"],
         )
-        repo.add_to_collaborators(
+        request.repository.add_to_collaborators(
             collaborator=collaborator["username"], permission=collaborator["permission"]
         )

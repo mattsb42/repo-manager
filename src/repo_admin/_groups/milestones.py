@@ -1,17 +1,13 @@
 """Handler for applying milestones settings."""
 import logging
-from typing import Any
 
-from github.Organization import Organization
-from github.Repository import Repository
+from .._util import HandlerRequest
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(
-    repo: Repository, org: Organization, data: Any
-):  # pylint: disable=unused-argument
+def apply(request: HandlerRequest):
     """Manage milestones.
 
     https://developer.github.com/v3/issues/milestones/#create-a-milestone
@@ -27,11 +23,11 @@ def apply(
 
     """
     _LOGGER.info("Applying branch milestone settings")
-    _LOGGER.info("Milestones configuration:\n%s", data)
+    _LOGGER.info("Milestones configuration:\n%s", request.data)
 
-    new_milestones = {milestone["title"]: milestone for milestone in data}
+    new_milestones = {milestone["title"]: milestone for milestone in request.data}
 
-    for milestone in repo.get_milestones():
+    for milestone in request.repository.get_milestones():
         if milestone.title not in new_milestones:
             _LOGGER.info(
                 "Found milestone '%s' that is not in config. Deleting.", milestone.title
@@ -54,6 +50,6 @@ def apply(
 
             new_milestones.pop(milestone.title)
 
-    for milestone in data:
+    for milestone in request.data:
         _LOGGER.info("Adding new milestone '%s'.", milestone["title"])
-        repo.create_milestone(**milestone)
+        request.repository.create_milestone(**milestone)

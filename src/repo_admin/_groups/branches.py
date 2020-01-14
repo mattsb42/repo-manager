@@ -3,20 +3,17 @@
 See https://developer.github.com/v3/repos/branches/#update-branch-protection for all available settings.
 """
 import logging
-from typing import Any
 
 from github import GithubException
 from github.Consts import mediaTypeRequireMultipleApprovingReviews
-from github.Organization import Organization
-from github.Repository import Repository
+
+from .._util import HandlerRequest
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
 
-def apply(
-    repo: Repository, org: Organization, data: Any
-):  # pylint: disable=unused-argument
+def apply(request: HandlerRequest):
     """Manage branch protection rules.
 
     .. code-block:: yaml
@@ -63,12 +60,12 @@ def apply(
     """
 
     _LOGGER.info("Applying branch protection settings")
-    _LOGGER.info("Branch protection configuration:\n%s", data)
+    _LOGGER.info("Branch protection configuration:\n%s", request.data)
 
-    for branch_config in data:
+    for branch_config in request.data:
         _LOGGER.info("Updating branch protection for branch '%s'", branch_config["name"])
         try:
-            branch = repo.get_branch(branch_config["name"])
+            branch = request.repository.get_branch(branch_config["name"])
         except GithubException as error:
             if error.data.get("message") == "Branch not found":
                 _LOGGER.warning(
