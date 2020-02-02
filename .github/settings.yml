@@ -110,3 +110,5 @@ branches:
                     - tests (windows-latest, 3.7, x64, local)
                     - tests (windows-latest, 3.8, x64, local)
                     - tests (windows-latest, 3.x, x64, local)
+                    # Integration tests
+                    - integ-tests
