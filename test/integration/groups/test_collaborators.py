@@ -1,4 +1,4 @@
-"""Integration test suite for ``repo_admin._groups.collaborators``."""
+"""Integration test suite for ``repo_manager._groups.collaborators``."""
 from copy import deepcopy
 from typing import Dict, List
 
@@ -6,8 +6,8 @@ import pytest
 from github.NamedUser import NamedUser
 from github.Repository import Repository
 
-from repo_admin._groups import collaborators
-from repo_admin._util import HandlerRequest, permission_to_string
+from repo_manager._groups import collaborators
+from repo_manager._util import HandlerRequest, permission_to_string
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import

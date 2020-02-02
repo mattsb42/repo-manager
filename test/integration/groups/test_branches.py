@@ -1,4 +1,4 @@
-"""Integration test suite for ``repo_admin._groups.branches``."""
+"""Integration test suite for ``repo_manager._groups.branches``."""
 import os
 from copy import deepcopy
 from typing import Any, Dict, List
@@ -7,8 +7,8 @@ import agithub.GitHub
 import pytest
 from github.Repository import Repository
 
-from repo_admin._groups import branches
-from repo_admin._util import HandlerRequest
+from repo_manager._groups import branches
+from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
@@ -157,7 +157,7 @@ def _get_branch_protections(repo: Repository, branch_names: List[str]) -> Dict[s
     actual_config = {}
     token = os.environ["GITHUB_TOKEN"]
     owner = "mattsb42-meta"
-    repo_name = "repo-admin-test-client"
+    repo_name = "repo-manager-test-client"
     gh = agithub.GitHub.GitHub(token=token)
     for name in branch_names:
         branch = getattr(getattr(getattr(gh.repos, owner), repo_name).branches, name)

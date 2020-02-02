@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v2
-            -   uses: mattsb42/repo-admin@master
+            -   uses: mattsb42/repo-manager@master
                 with:
                     github-token: ${{ secrets.ADMIN_TOKEN }}
                     debug: true

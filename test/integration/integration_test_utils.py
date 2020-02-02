@@ -1,4 +1,4 @@
-"""Helper tools for ``repo_admin`` integration tests."""
+"""Helper tools for ``repo_manager`` integration tests."""
 import os
 
 import github
@@ -11,7 +11,7 @@ REPO_ORG = "mattsb42-meta"
 
 @pytest.fixture
 def integ_repo(monkeypatch):
-    repo = "mattsb42-meta/repo-admin-test-client"
+    repo = "mattsb42-meta/repo-manager-test-client"
     monkeypatch.setenv("GITHUB_REPOSITORY", repo)
     yield repo
 
@@ -19,7 +19,7 @@ def integ_repo(monkeypatch):
 @pytest.fixture
 def private_integ_repo(monkeypatch):
     user = os.environ.get("GITHUB_USER", "mattsb42-admin-bot")
-    repo = f"{user}/repo-admin-test-client"
+    repo = f"{user}/repo-manager-test-client"
     monkeypatch.setenv("GITHUB_REPOSITORY", repo)
     yield repo
 

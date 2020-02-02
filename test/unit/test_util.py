@@ -1,19 +1,19 @@
-"""Unit test suite for ``repo_admin._util``."""
+"""Unit test suite for ``repo_manager._util``."""
 from dataclasses import dataclass
 from typing import Dict
 
 import pytest
 
-import repo_admin._util
-from repo_admin._util import load_context, load_inputs, permission_to_string
-from repo_admin.exceptions import RepoAdminError
+import repo_manager._util
+from repo_manager._util import load_context, load_inputs, permission_to_string
+from repo_manager.exceptions import RepoAdminError
 
 pytestmark = [pytest.mark.local, pytest.mark.unit]
 
 
 @pytest.fixture
 def mock_github(mocker):
-    mocker.patch.object(repo_admin._util, "Github")
+    mocker.patch.object(repo_manager._util, "Github")
 
 
 def apply_environment_variables(patcher, variables: Dict[str, str]):
@@ -43,8 +43,8 @@ def test_load_inputs(environment_variables: Dict[str, str], mock_github, monkeyp
 
     test = load_inputs()
 
-    repo_admin._util.Github.assert_called_once_with(environment_variables["INPUT_GITHUB-TOKEN"])
-    assert test.github is repo_admin._util.Github.return_value
+    repo_manager._util.Github.assert_called_once_with(environment_variables["INPUT_GITHUB-TOKEN"])
+    assert test.github is repo_manager._util.Github.return_value
     assert test.config_file == environment_variables.get(
         "INPUT_CONFIG-FILE", ".github/settings.yml"
     )

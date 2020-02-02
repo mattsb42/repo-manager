@@ -1,4 +1,4 @@
-name: repo-admin
+name: repo-manager
 description: Automated repository administrator
 author: mattsb42
 inputs:

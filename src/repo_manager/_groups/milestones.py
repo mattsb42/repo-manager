@@ -31,7 +31,7 @@ def apply(request: HandlerRequest):
         # PyGithub sanely requires due_on to be a date or datetime rather than a string
         if "due_on" in milestone:
             # Something strange is going on here:
-            # https://github.com/mattsb42/repo-admin/issues/26
+            # https://github.com/mattsb42/repo-manager/issues/26
             milestone["due_on"] = datetime.fromisoformat(milestone["due_on"])
         new_milestones[milestone["title"]] = milestone
 
