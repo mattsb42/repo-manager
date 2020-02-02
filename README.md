@@ -33,7 +33,8 @@ Because it runs as a GitHub Action,
 you can also exert more fine control over when `repo-admin` runs,
 rather than simply running on any pushes to your default branch.
 
-`repo-admin` is fully backwards compatible with [Probot Settings] config files.
+`repo-admin` is fully backwards compatible with [Probot Settings] config files,
+but will expand in the future to support more repository administration features.
 
 
 [Probot Settings]: https://probot.github.io/apps/settings/
