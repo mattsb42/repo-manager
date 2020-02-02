@@ -10,6 +10,7 @@ from github.Team import Team
 from repo_manager._groups import teams
 from repo_manager._util import HandlerRequest
 
+from ..integration_test_utils import agithub_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
 from ..integration_test_utils import REPO_ORG
@@ -64,14 +65,17 @@ def no_teams_but_return_to_baseline(integ_repo, github_client):
 
 
 @pytest.fixture
-def push_bots_return_to_baseline(integ_repo, github_client):
+def push_bots_return_to_baseline(integ_repo, github_client, agithub_client):
+    owner, repo_name = integ_repo.split("/", 1)
+    arepo = getattr(getattr(agithub_client.repos, owner), repo_name)
+    aorg = getattr(agithub_client.orgs, owner)
     repo = github_client.get_repo(integ_repo)
     org = github_client.get_organization(REPO_ORG)
     request = HandlerRequest(
         repository=repo, data=[dict(name="bots", permission="push")], organization=org
     )
     teams.apply(request)
-    yield repo, org
+    yield arepo, aorg
     apply_baseline(repo, org)
 
 

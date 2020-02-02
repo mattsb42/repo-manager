@@ -9,6 +9,15 @@ from .._util import HandlerRequest
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
 
+HEADERS = dict(
+    Accept=",".join(
+        [
+            "application/vnd.github.nebula-preview+json",
+            "application/vnd.github.baptiste-preview+json",
+        ]
+    )
+)
+
 
 def apply(request: HandlerRequest):
     """Manage repository-level settings.
@@ -65,4 +74,4 @@ def apply(request: HandlerRequest):
     _LOGGER.info("Applying repository settings")
     _LOGGER.info("Repository configuration:\n%s", request.data)
 
-    request.repository.edit(**request.data)
+    request.arepo.patch(body=request.data, headers=HEADERS)

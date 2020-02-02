@@ -31,15 +31,24 @@ def parse_config(inputs: Inputs, context: RepoContext) -> Dict[str, Callable[[],
         raw_config = yaml.safe_load(raw)
 
     repository = inputs.github.get_repo(full_name_or_id=f"{context.owner}/{context.repo}")
+    repo = getattr(getattr(inputs.agithub.repos, context.owner), context.repo)
     try:
         organization = inputs.github.get_organization(context.owner)
+
     except UnknownObjectException:
         organization = None
+
+    org = getattr(inputs.agithub.orgs, context.owner)
+    status, _org_data = org.get()
+    if status != 200:
+        org = None
 
     return {
         group: partial(
             _load_handler(group),
-            HandlerRequest(data=data, repository=repository, organization=organization),
+            HandlerRequest(
+                data=data, repository=repository, arepo=repo, organization=organization, aorg=org
+            ),
         )
         for group, data in raw_config.items()
     }

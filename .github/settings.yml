@@ -62,7 +62,8 @@ branches:
                     - route-pull-request
                     # Static Analysis
                     - analysis (bandit)
-                    - analysis (mypy)
+                    # Disable mypy requirement until agithub migration is complete
+                    #- analysis (mypy)
                     - analysis (lint)
                     # Linux
                     - tests (ubuntu-latest, 3.7, x64, local)
@@ -92,7 +93,8 @@ branches:
                     - route-pull-request
                     # Static Analysis
                     - analysis (bandit)
-                    - analysis (mypy)
+                    # Disable mypy requirement until agithub migration is complete
+                    #- analysis (mypy)
                     - analysis (lint)
                     # Linux
                     - tests (ubuntu-latest, 3.7, x64, local)
