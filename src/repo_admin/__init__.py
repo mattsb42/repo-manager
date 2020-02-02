@@ -7,7 +7,7 @@ from ._groups import apply_config, parse_config
 from ._util import load_context, load_inputs
 
 __all__ = ("__version__",)
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 _LOGGER = logging.getLogger(__name__)
 
 

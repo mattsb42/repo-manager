@@ -1,3 +1,5 @@
 # Changelog
 
-## 0.0.1 -- 2020-01-xx
+## 1.0.0 -- 2020-02-01
+
+Initial release.
