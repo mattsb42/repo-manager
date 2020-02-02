@@ -1,5 +1,6 @@
 """Handler for applying milestones settings."""
 import logging
+from datetime import datetime
 
 from .._util import HandlerRequest
 
@@ -22,34 +23,43 @@ def apply(request: HandlerRequest):
             state: open
 
     """
-    _LOGGER.info("Applying branch milestone settings")
+    _LOGGER.info("Applying milestone settings")
     _LOGGER.info("Milestones configuration:\n%s", request.data)
 
-    new_milestones = {milestone["title"]: milestone for milestone in request.data}
+    new_milestones = {}
+    for milestone in request.data:
+        # PyGithub sanely requires due_on to be a date or datetime rather than a string
+        if "due_on" in milestone:
+            # Something strange is going on here:
+            # https://github.com/mattsb42/repo-admin/issues/26
+            milestone["due_on"] = datetime.fromisoformat(milestone["due_on"])
+        new_milestones[milestone["title"]] = milestone
 
-    for milestone in request.repository.get_milestones():
+    for milestone in request.repository.get_milestones(state="all"):
         if milestone.title not in new_milestones:
-            _LOGGER.info(
-                "Found milestone '%s' that is not in config. Deleting.", milestone.title
-            )
+            _LOGGER.info("Found milestone '%s' that is not in config. Deleting.", milestone.title)
             milestone.delete()
         else:
             new_values = new_milestones[milestone.title]
-            if not all(
+            if all(
                 (
                     milestone.state == new_values["state"],
                     milestone.description == new_values.get("description"),
-                    milestone.due_on.isoformat() == new_values.get("due_on"),
+                    milestone.due_on == new_values.get("due_on"),
                 )
             ):
+                _LOGGER.info(
+                    "Found milestone '%s' that matches config. Skipping milestone.", milestone.title
+                )
+            else:
                 _LOGGER.info(
                     "Found milestone '%s' that is updated in config. Updating milestone.",
                     milestone.title,
                 )
                 milestone.edit(**new_milestones[milestone.title])
 
-            new_milestones.pop(milestone.title)
+            del new_milestones[milestone.title]
 
-    for milestone in request.data:
+    for milestone in new_milestones.values():
         _LOGGER.info("Adding new milestone '%s'.", milestone["title"])
         request.repository.create_milestone(**milestone)

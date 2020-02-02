@@ -5,6 +5,7 @@ https://developer.github.com/v3/teams/#add-or-update-team-repository
 import logging
 
 from .._util import HandlerRequest
+from ..exceptions import RepoAdminError
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
@@ -23,7 +24,7 @@ def apply(request: HandlerRequest):
         # NOTE: name must be the "slug" not the given name
 
     """
-    _LOGGER.info("Applying branch protection settings")
+    _LOGGER.info("Applying team access settings")
     _LOGGER.info("Teams configuration:\n%s", request.data)
 
     new_teams = {team["name"]: team for team in request.data}
@@ -65,6 +66,6 @@ def apply(request: HandlerRequest):
         try:
             team = org_teams[name]
         except KeyError:
-            raise Exception(f"Unknown team '{name}")
+            raise RepoAdminError(f"Unknown team '{name}")
 
         team.set_repo_permission(request.repository, team_data["permission"])

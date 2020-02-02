@@ -8,6 +8,8 @@ from github.Organization import Organization
 from github.Permissions import Permissions
 from github.Repository import Repository
 
+from .exceptions import RepoAdminError
+
 __all__ = (
     "load_inputs",
     "load_context",
@@ -70,4 +72,4 @@ def permission_to_string(permission: Permissions) -> str:
     if permission.pull:
         return "pull"
 
-    raise Exception("Unknown permissions type!")
+    raise RepoAdminError(f"Unknown permissions: {permission!r}")

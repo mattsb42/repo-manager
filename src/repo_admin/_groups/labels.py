@@ -31,43 +31,59 @@ def apply(request: HandlerRequest):
             oldname: Help Wanted
 
     """
-    _LOGGER.info("Applying branch label settings")
+    _LOGGER.info("Applying label settings")
     _LOGGER.info("Labels configuration:\n%s", request.data)
 
-    # handle label renaming
-    # https://github.com/mattsb42/repo-admin/issues/18
+    requested_new_or_update: Dict[str, Dict[str, str]] = {}
+    requested_rename: Dict[str, Dict[str, str]] = {}
 
-    new_labels: Dict[str, Dict[str, str]] = {}
     for label in request.data:
+        # YAML can interpret these as numbers but the API requires strings.
+        # Also, make sure that any leading # values are removed.
         label["color"] = str(label["color"]).replace("#", "")
-        new_labels[label["name"]] = label
+        if "oldname" in label:
+            old_name = label["oldname"]
+            # prep rename and update scenarios
+            rename = label.copy()
+            del rename["oldname"]
 
-    # Delete or update any existing labels
-    for label in request.repository.get_labels():
-        if label.name not in new_labels:
-            _LOGGER.info(
-                "Found label '%s' that is not in config. Removing label.", label.name
-            )
-            label.delete()
+            # add to rename in case the label has not yet been renamed
+            requested_rename[old_name] = rename
+            # add to updates in case it has
+            requested_new_or_update[rename["name"]] = rename
+
         else:
-            new_values = new_labels[label.name]
+            requested_new_or_update[label["name"]] = label
+
+    for label in request.repository.get_labels():
+        if label.name in requested_rename:
+            _LOGGER.info("Found label '%s' that is renamed in config. Updating label.", label.name)
+            new_values = requested_rename[label.name].copy()
+            old_name = label.name
+            label.edit(**new_values)
+            del requested_rename[old_name]
+            # The label has not previously been renamed, so remove it from the update request
+            del requested_new_or_update[label.name]
+            continue
+
+        if label.name in requested_new_or_update:
+            new_values = requested_new_or_update[label.name].copy()
             if not all(
                 (
                     label.color == new_values["color"],
                     label.description == new_values["description"],
-                    "new_name" not in new_values,
                 )
             ):
                 _LOGGER.info(
-                    "Found label '%s' that is updated in config. Updating label.",
-                    label.name,
+                    "Found label '%s' that is updated in config. Updating label.", label.name,
                 )
-                label.edit(**new_labels[label.name])
-            new_labels.pop(label.name)
+                label.edit(**new_values)
+            del requested_new_or_update[label.name]
+            continue
 
-    # Add any new labels
-    for label in new_labels.values():
-        # YAML can interpret these as numbers but the API requires strings.
-        # Also, make sure that any leading # values are removed.
-        _LOGGER.info("Adding new label '%s'.", label["name"])
+        _LOGGER.info("Found label '%s' that is not in config. Deleting label.", label.name)
+        label.delete()
+
+    for name, label in requested_new_or_update.items():
+        _LOGGER.info("New label '%s' in config. Adding label.", name)
         request.repository.create_label(**label)

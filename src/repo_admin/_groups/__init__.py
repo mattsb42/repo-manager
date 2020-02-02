@@ -7,6 +7,7 @@ import yaml
 from github.GithubException import UnknownObjectException
 
 from .._util import HandlerRequest, Inputs, RepoContext
+from ..exceptions import RepoAdminError
 
 __all__ = ("parse_config", "apply_config")
 
@@ -15,7 +16,7 @@ def _load_handler(group: str) -> Callable[[RepoContext, str, Any], None]:
     try:
         handler = importlib.import_module(f"{__name__}.{group}")
     except Exception:
-        raise Exception(f"Unknown config group '{group}'")
+        raise RepoAdminError(f"Unknown config group '{group}'")
 
     # mypy doesn't know how to follow module import magic
     return handler.apply  # type: ignore
