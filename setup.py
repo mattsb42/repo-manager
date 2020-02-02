@@ -1,4 +1,4 @@
-"""repo-admin."""
+"""repo-manager."""
 import io
 import os
 import re
@@ -16,7 +16,7 @@ def read(*args):
 
 def get_version():
     """Read the version from this module."""
-    init = read("src", "repo_admin", "__init__.py")
+    init = read("src", "repo_manager", "__init__.py")
     return VERSION_RE.search(init).group(1)
 
 
@@ -45,17 +45,17 @@ def get_requirements():
 INSTALL_REQUIRES, DEPENDENCY_LINKS = get_requirements()
 
 setup(
-    name="repo-admin",
+    name="repo-manager",
     version=get_version(),
     packages=find_packages("src"),
     package_dir={"": "src"},
-    url="https://github.com/mattsb42/repo-admin",
+    url="https://github.com/mattsb42/repo-manager",
     author="Matt Bullock",
     author_email="m@ttsb42.com",
     maintainer="Matt Bullock",
-    description="repo-admin",
+    description="repo-manager",
     long_description=read("README.md"),
-    keywords="repo-admin repo_admin",
+    keywords="repo-manager repo_manager",
     data_files=["README.md", "CHANGELOG.md", "LICENSE", "requirements.txt"],
     license="Apache 2.0",
     install_requires=INSTALL_REQUIRES,
@@ -71,5 +71,5 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
     ],
-    entry_points=dict(console_scripts=["repo-admin=repo_admin:cli"]),
+    entry_points=dict(console_scripts=["repo-manager=repo_manager:cli"]),
 )

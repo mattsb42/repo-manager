@@ -1,4 +1,4 @@
-"""repo-admin: Manage your GitHub repository with source control."""
+"""repo-manager: Manage your GitHub repository with source control."""
 import argparse
 import logging
 from typing import Sequence

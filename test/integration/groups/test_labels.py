@@ -1,4 +1,4 @@
-"""Integration test suite for ``repo_admin._groups.labels``."""
+"""Integration test suite for ``repo_manager._groups.labels``."""
 from copy import deepcopy
 from typing import Dict, List
 
@@ -6,8 +6,8 @@ import pytest
 from github.Label import Label
 from github.Repository import Repository
 
-from repo_admin._groups import labels
-from repo_admin._util import HandlerRequest
+from repo_manager._groups import labels
+from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import

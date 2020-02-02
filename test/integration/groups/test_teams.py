@@ -1,4 +1,4 @@
-"""Integration test suite for ``repo_admin._groups.teams``."""
+"""Integration test suite for ``repo_manager._groups.teams``."""
 from copy import deepcopy
 from typing import Dict, List
 
@@ -7,8 +7,8 @@ from github.Organization import Organization
 from github.Repository import Repository
 from github.Team import Team
 
-from repo_admin._groups import teams
-from repo_admin._util import HandlerRequest
+from repo_manager._groups import teams
+from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import

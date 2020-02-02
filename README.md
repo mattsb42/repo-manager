@@ -1,13 +1,13 @@
-# repo-admin
+# repo-manager
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 **NOTICE: This project is a work in progress and is not yet ready for use.**
 
-`repo-admin` is a GitHub Action that manages your repository for you
+`repo-manager` is a GitHub Action that manages your repository for you
 based on a configuration file in your repository.
 
-`repo-admin` was inspired by [Probot Settings]
+`repo-manager` was inspired by [Probot Settings]
 but is designed to solve two issues with that app:
 
 1. **Permissions** : Out of necessity,
@@ -17,7 +17,7 @@ but is designed to solve two issues with that app:
    Granting these permissions is not always possible,
    and running your own app is extra overhead that I would rather not have to deal with.
 
-   * `repo-admin` solves this problem by running as a GitHub Action
+   * `repo-manager` solves this problem by running as a GitHub Action
      using the credentials that *you* provide.
 
 1. **Debugging** : [Probot Settings] lacks a feedback mechanism to let you know
@@ -25,15 +25,15 @@ but is designed to solve two issues with that app:
    This is especially frustrating if you are attempting to debug a bad config,
    when the only feedback you can get is that nothing happened.
 
-   * Because `repo-admin` runs as a GitHub Action,
+   * Because `repo-manager` runs as a GitHub Action,
      you can see exactly when it ran and what happened.
 
 
 Because it runs as a GitHub Action,
-you can also exert more fine control over when `repo-admin` runs,
+you can also exert more fine control over when `repo-manager` runs,
 rather than simply running on any pushes to your default branch.
 
-`repo-admin` is fully backwards compatible with [Probot Settings] config files,
+`repo-manager` is fully backwards compatible with [Probot Settings] config files,
 but will expand in the future to support more repository administration features.
 
 

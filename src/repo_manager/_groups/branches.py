@@ -76,7 +76,7 @@ def apply(request: HandlerRequest):
             raise
         # branch.edit_protection(**branch_config["protection"])
         # edit_protection is a custom wrapper on top of update_branch_protection
-        # https://github.com/mattsb42/repo-admin/issues/17
+        # https://github.com/mattsb42/repo-manager/issues/17
         branch._requester.requestJsonAndCheck(  # remove once #17 is fixed pylint: disable=protected-access
             "PUT",
             branch.protection_url,

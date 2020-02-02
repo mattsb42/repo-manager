@@ -1,4 +1,4 @@
-"""Integration test suite for ``repo_admin._groups.milestones``."""
+"""Integration test suite for ``repo_manager._groups.milestones``."""
 from copy import deepcopy
 from typing import Dict, List
 
@@ -6,8 +6,8 @@ import pytest
 from github.Milestone import Milestone
 from github.Repository import Repository
 
-from repo_admin._groups import milestones
-from repo_admin._util import HandlerRequest
+from repo_manager._groups import milestones
+from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
@@ -34,7 +34,7 @@ def compare_milestone_data(*, actual: List[Milestone], expected: Dict[str, Dict[
         assert milestone.description == expected_values.get("description")
         assert milestone.state == expected_values.get("state", "open")
         # Ignoring due_on values for the moment
-        # https://github.com/mattsb42/repo-admin/issues/26
+        # https://github.com/mattsb42/repo-manager/issues/26
         # if "due_on" in expected_values:
         #     assert milestone.due_on == datetime.fromisoformat(expected_values["due_on"])
         # else:

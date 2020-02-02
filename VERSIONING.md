@@ -1,6 +1,6 @@
 # Versioning
 
-repo-admin releases follow [Semantic Versioning].
+repo-manager releases follow [Semantic Versioning].
 
 
 

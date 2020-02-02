@@ -1,12 +1,12 @@
-"""Integration test suite for ``repo_admin._groups.repository``."""
+"""Integration test suite for ``repo_manager._groups.repository``."""
 from copy import deepcopy
 from typing import Dict
 
 import pytest
 from github.Repository import Repository
 
-from repo_admin._groups import repository
-from repo_admin._util import HandlerRequest
+from repo_manager._groups import repository
+from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
@@ -16,7 +16,7 @@ pytestmark = [pytest.mark.integ]
 
 BASELINE = dict(
     description="What ever could this be?",
-    homepage="https://github.com/mattsb42/repo-admin",
+    homepage="https://github.com/mattsb42/repo-manager",
     private=False,
     # visibility="public",
     has_issues=True,
@@ -78,7 +78,7 @@ def _cases():
     yield _build_case("homepage", "https://github.com", "change homepage")
 
     # PyGithub doesn't support this yet
-    # https://github.com/mattsb42/repo-admin/issues/27
+    # https://github.com/mattsb42/repo-manager/issues/27
     # visibility: [public]/private
     # yield _build_case("visibility", "private", "change visibility to private")
 
@@ -92,7 +92,7 @@ def _cases():
     yield _build_case("has_wiki", False, "disable wiki")
 
     # PyGithub doesn't support this yet
-    # https://github.com/mattsb42/repo-admin/issues/27
+    # https://github.com/mattsb42/repo-manager/issues/27
     # is_template: [false]/true
     # yield _build_case("is_template", True, "make template")
 
@@ -109,7 +109,7 @@ def _cases():
     yield _build_case("allow_rebase_merge", False, "disable rebase merge")
 
     # PyGithub doesn't support this yet
-    # https://github.com/mattsb42/repo-admin/issues/27
+    # https://github.com/mattsb42/repo-manager/issues/27
     # delete_branch_on_merge: [false]/true
     # yield _build_case("delete_branch_on_merge", True, "delete pull request head branch on merge")
 
@@ -131,7 +131,7 @@ def test_private_repo_swap(private_integ_repo, github_client):
     repo = github_client.get_repo(private_integ_repo)
 
     private_baseline = dict(
-        description="this repo is used to test mattsb42/repo-admin", private=False
+        description="this repo is used to test mattsb42/repo-manager", private=False
     )
 
     make_public_request = HandlerRequest(repository=repo, data=deepcopy(private_baseline))
