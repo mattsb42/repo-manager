@@ -4,13 +4,11 @@ See https://developer.github.com/v3/repos/branches/#update-branch-protection for
 """
 import logging
 
-from github import GithubException
-from github.Consts import mediaTypeRequireMultipleApprovingReviews
-
 from .._util import HandlerRequest
 
 __all__ = ("apply",)
 _LOGGER = logging.getLogger(__name__)
+HEADERS = dict(Accept="application/vnd.github.luke-cage-preview+json")
 
 
 def apply(request: HandlerRequest):
@@ -62,24 +60,21 @@ def apply(request: HandlerRequest):
     _LOGGER.info("Applying branch protection settings")
     _LOGGER.info("Branch protection configuration:\n%s", request.data)
 
+    repo_url = request.arepo.url
     for branch_config in request.data:
+        request.arepo.url = repo_url
         _LOGGER.info("Updating branch protection for branch '%s'", branch_config["name"])
-        try:
-            branch = request.repository.get_branch(branch_config["name"])
-        except GithubException as error:
-            if error.data.get("message") == "Branch not found":
-                _LOGGER.warning(
-                    "Branch protection requested for non-existant branch '%s'. Skipping.",
-                    branch_config["name"],
-                )
-                continue
-            raise
-        # branch.edit_protection(**branch_config["protection"])
-        # edit_protection is a custom wrapper on top of update_branch_protection
-        # https://github.com/mattsb42/repo-manager/issues/17
-        branch._requester.requestJsonAndCheck(  # remove once #17 is fixed pylint: disable=protected-access
-            "PUT",
-            branch.protection_url,
-            headers={"Accept": mediaTypeRequireMultipleApprovingReviews},
-            input=branch_config["protection"],
-        )
+        branch = getattr(request.arepo.branches, branch_config["name"])
+        protection = branch.protection
+        status, current_protection = protection.get(headers=HEADERS)
+        if status == 404:
+            _LOGGER.warning(
+                "Branch protection requested for non-existant branch '%s'. Skipping.",
+                branch_config["name"],
+            )
+        if status != 200:
+            raise Exception(f"Encountered unknown error: STATUS {status} :: {current_protection}")
+
+        protection.put(body=branch_config["protection"], headers=HEADERS)
+
+    request.arepo.url = repo_url

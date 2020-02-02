@@ -1,15 +1,13 @@
 """Integration test suite for ``repo_manager._groups.branches``."""
-import os
 from copy import deepcopy
 from typing import Any, Dict, List
 
-import agithub.GitHub
 import pytest
-from github.Repository import Repository
 
 from repo_manager._groups import branches
 from repo_manager._util import HandlerRequest
 
+from ..integration_test_utils import agithub_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
 from .test_teams import push_bots_return_to_baseline  # noqa pylint: disable=unused-import
@@ -153,24 +151,22 @@ def compare_branch_protection_data(*, actual: Dict[str, Any], expected: Dict[str
             comparator(actual_value, expected_value)
 
 
-def _get_branch_protections(repo: Repository, branch_names: List[str]) -> Dict[str, Any]:
+def _get_branch_protections(repo, branch_names: List[str]) -> Dict[str, Any]:
     actual_config = {}
-    token = os.environ["GITHUB_TOKEN"]
-    owner = "mattsb42-meta"
-    repo_name = "repo-manager-test-client"
-    gh = agithub.GitHub.GitHub(token=token)
+    repo_url = repo.url
     for name in branch_names:
-        branch = getattr(getattr(getattr(gh.repos, owner), repo_name).branches, name)
-        status, data = branch.protection.get(
-            headers=dict(Accept="application/vnd.github.luke-cage-preview+json")
-        )
+        repo.url = repo_url
+        branch = getattr(repo.branches, name)
+        status, data = branch.protection.get(headers=branches.HEADERS)
         assert status == 200
 
         actual_config[name] = data
+
+    repo.url = repo_url
     return actual_config
 
 
-def assert_baseline(repo: Repository):
+def assert_baseline(repo):
     actual_config = _get_branch_protections(repo, [branch["name"] for branch in BASELINE])
 
     expected_config = {config["name"]: config["protection"] for config in BASELINE}
@@ -178,8 +174,8 @@ def assert_baseline(repo: Repository):
     compare_branch_protection_data(actual=actual_config, expected=expected_config)
 
 
-def apply_baseline(repo: Repository):
-    request = HandlerRequest(repository=repo, data=deepcopy(BASELINE))
+def apply_baseline(repo):
+    request = HandlerRequest(arepo=repo, data=deepcopy(BASELINE))
     branches.apply(request)
 
     assert_baseline(repo)
@@ -192,8 +188,9 @@ def from_baseline(push_bots_return_to_baseline):
     apply_baseline(repo)
 
 
-def test_branches_baseline(integ_repo, github_client):
-    repo = github_client.get_repo(integ_repo)
+def test_branches_baseline(integ_repo, agithub_client):
+    owner, repo_name = integ_repo.split("/", 1)
+    repo = getattr(getattr(agithub_client.repos, owner), repo_name)
     apply_baseline(repo)
     assert_baseline(repo)
 
@@ -247,7 +244,7 @@ def _cases():
 def test_branch_protection(from_baseline, new_configs):
     repo = from_baseline
 
-    request = HandlerRequest(repository=repo, data=deepcopy(new_configs))
+    request = HandlerRequest(arepo=repo, data=deepcopy(new_configs))
     branches.apply(request)
 
     expected_config = {config["name"]: config["protection"] for config in new_configs}
