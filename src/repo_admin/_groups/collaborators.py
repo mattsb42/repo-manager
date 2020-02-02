@@ -27,11 +27,16 @@ def apply(request: HandlerRequest):
 
     """
 
-    _LOGGER.info("Applying branch collaborator settings")
+    _LOGGER.info("Applying collaborator settings.")
     _LOGGER.info("Collaborators configuration:\n%s", request.data)
 
     new_collaborators = {user["username"]: user for user in request.data}
 
+    # First, clear all pending invites
+    for invite in request.repository.get_pending_invitations():
+        request.repository.remove_invitation(invite.id)
+
+    # Then, sync collaborators
     for collaborator in request.repository.get_collaborators():
         current_permissions = permission_to_string(collaborator.permissions)
 
@@ -48,7 +53,13 @@ def apply(request: HandlerRequest):
         else:
             new_permissions = new_collaborators[collaborator.login]["permission"]
 
-            if current_permissions != new_permissions:
+            if current_permissions == new_permissions:
+                _LOGGER.info(
+                    "Found existing collaborator '%s' with expected %s permissions. Skipping.",
+                    collaborator.login,
+                    current_permissions,
+                )
+            else:
                 _LOGGER.info(
                     "Collaborator '%s' found with %s permissions when %s permissions in config."
                     " Adjusting access for user.",
@@ -57,11 +68,9 @@ def apply(request: HandlerRequest):
                     new_permissions,
                 )
                 request.repository.remove_from_collaborators(collaborator)
-                request.repository.add_to_collaborators(
-                    collaborator, permission=new_permissions
-                )
+                request.repository.add_to_collaborators(collaborator, permission=new_permissions)
 
-            new_collaborators.pop(collaborator.login)
+            del new_collaborators[collaborator.login]
 
     for collaborator in new_collaborators.values():
         _LOGGER.info(
@@ -72,3 +81,5 @@ def apply(request: HandlerRequest):
         request.repository.add_to_collaborators(
             collaborator=collaborator["username"], permission=collaborator["permission"]
         )
+
+    _LOGGER.info("Branch collaborator settings applied.")

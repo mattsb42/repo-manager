@@ -16,10 +16,7 @@ def _arguments() -> argparse.ArgumentParser:
     args = argparse.ArgumentParser(description="")
     args.add_argument("--version", action="version", version=__version__)
     args.add_argument(
-        "-v",
-        dest="verbosity",
-        action="count",
-        help="Enables logging and sets detail level.",
+        "-v", dest="verbosity", action="count", help="Enables logging and sets detail level.",
     )
 
     return args
