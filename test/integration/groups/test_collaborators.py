@@ -11,9 +11,10 @@ from repo_manager._util import HandlerRequest, permission_to_string
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
+from ..integration_test_utils import INTEG_FLAKE
 from .test_teams import no_teams_but_return_to_baseline  # noqa pylint: disable=unused-import
 
-pytestmark = [pytest.mark.integ]
+pytestmark = [pytest.mark.integ, INTEG_FLAKE]
 
 BASELINE = [
     dict(username="mattsb42-admin-bot", permission="admin"),

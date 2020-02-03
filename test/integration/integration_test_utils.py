@@ -1,13 +1,39 @@
 """Helper tools for ``repo_manager`` integration tests."""
 import os
+import time
+from collections import defaultdict
 
 import github
 import pytest
 from agithub.GitHub import GitHub
 
-__all__ = ("integ_repo", "github_client", "agithub_client", "REPO_ORG", "private_integ_repo")
+__all__ = (
+    "INTEG_FLAKE",
+    "integ_repo",
+    "github_client",
+    "agithub_client",
+    "REPO_ORG",
+    "private_integ_repo",
+)
 
 REPO_ORG = "mattsb42-meta"
+
+
+class RetryBackoff:
+    def __init__(self, step_size=1):
+        self._step_size = step_size
+        self._test_records = defaultdict(int)
+
+    def __call__(self, err, name, test, plugin):
+        # First call sleep time is always 0
+        # because flaky calls this on every call,
+        # not just on retries.
+        time.sleep(self._test_records[name])
+        self._test_records[name] += self._step_size
+        return True
+
+
+INTEG_FLAKE = pytest.mark.flaky(max_runs=3, rerun_filter=RetryBackoff())
 
 
 @pytest.fixture
