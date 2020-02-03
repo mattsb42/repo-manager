@@ -10,9 +10,10 @@ from repo_manager._util import HandlerRequest
 from ..integration_test_utils import agithub_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
+from ..integration_test_utils import INTEG_FLAKE
 from .test_teams import push_bots_return_to_baseline  # noqa pylint: disable=unused-import
 
-pytestmark = [pytest.mark.integ]
+pytestmark = [pytest.mark.integ, INTEG_FLAKE]
 
 BASELINE = [
     dict(

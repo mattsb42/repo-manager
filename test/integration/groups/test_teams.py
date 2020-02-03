@@ -13,9 +13,9 @@ from repo_manager._util import HandlerRequest
 from ..integration_test_utils import agithub_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
-from ..integration_test_utils import REPO_ORG
+from ..integration_test_utils import INTEG_FLAKE, REPO_ORG
 
-pytestmark = [pytest.mark.integ]
+pytestmark = [pytest.mark.integ, INTEG_FLAKE]
 
 
 BASELINE = [dict(name="bots", permission="pull")]

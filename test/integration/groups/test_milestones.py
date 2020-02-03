@@ -11,8 +11,9 @@ from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
+from ..integration_test_utils import INTEG_FLAKE
 
-pytestmark = [pytest.mark.integ]
+pytestmark = [pytest.mark.integ, INTEG_FLAKE]
 
 BASELINE = [
     dict(title="my first milestone", description="this is a milestone", state="open"),
