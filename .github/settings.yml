@@ -3,6 +3,8 @@ repository:
     description: Manage your GitHub repository with source control!
     has_wiki: false
 
+    delete_branch_on_merge: true
+
     default_branch: development
     allow_squash_merge: true
     allow_merge_commit: true
