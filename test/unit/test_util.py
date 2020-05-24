@@ -88,4 +88,4 @@ def test_permission_to_string_unknown():
     with pytest.raises(RepoAdminError) as excinfo:
         permission_to_string(FakePermissions())
 
-    excinfo.match(f"Unknown permissions: *")
+    excinfo.match("Unknown permissions: *")
