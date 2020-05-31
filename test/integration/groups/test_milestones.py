@@ -11,7 +11,7 @@ from repo_manager._util import HandlerRequest
 
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
-from ..integration_test_utils import INTEG_FLAKE
+from ..integration_test_utils import INTEG_FLAKE, baseline_wait
 
 pytestmark = [pytest.mark.integ, INTEG_FLAKE]
 
@@ -53,6 +53,7 @@ def assert_baseline(repo: Repository):
 def apply_baseline(repo: Repository):
     request = HandlerRequest(repository=repo, data=deepcopy(BASELINE))
     milestones.apply(request)
+    baseline_wait()
 
     assert_baseline(repo)
 

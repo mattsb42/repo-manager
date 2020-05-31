@@ -14,9 +14,15 @@ __all__ = (
     "agithub_client",
     "REPO_ORG",
     "private_integ_repo",
+    "baseline_wait",
 )
 
 REPO_ORG = "mattsb42-meta"
+
+
+def baseline_wait():
+    """Flaky does not trigger if tests fail, and resetting to baseline is having issues with eventual consistency."""
+    time.sleep(0.5)
 
 
 class RetryBackoff:

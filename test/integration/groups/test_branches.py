@@ -10,7 +10,7 @@ from repo_manager._util import HandlerRequest
 from ..integration_test_utils import agithub_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
-from ..integration_test_utils import INTEG_FLAKE
+from ..integration_test_utils import INTEG_FLAKE, baseline_wait
 from .test_teams import push_bots_return_to_baseline  # noqa pylint: disable=unused-import
 
 pytestmark = [pytest.mark.integ, INTEG_FLAKE]
@@ -178,6 +178,7 @@ def assert_baseline(repo):
 def apply_baseline(repo):
     request = HandlerRequest(arepo=repo, data=deepcopy(BASELINE))
     branches.apply(request)
+    baseline_wait()
 
     assert_baseline(repo)
 

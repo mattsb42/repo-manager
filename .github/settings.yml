@@ -48,6 +48,9 @@ labels:
     -   name: next release
         color: 8D09F3
         description: Required for next release
+    -   name: block merge
+        color: FF0000
+        description: Block pull requests from automatically merging
 
 branches:
     -   name: development

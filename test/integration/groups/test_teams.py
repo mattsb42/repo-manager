@@ -13,7 +13,7 @@ from repo_manager._util import HandlerRequest
 from ..integration_test_utils import agithub_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import github_client  # noqa pylint: disable=unused-import
 from ..integration_test_utils import integ_repo  # noqa pylint: disable=unused-import
-from ..integration_test_utils import INTEG_FLAKE, REPO_ORG
+from ..integration_test_utils import INTEG_FLAKE, REPO_ORG, baseline_wait
 
 pytestmark = [pytest.mark.integ, INTEG_FLAKE]
 
@@ -40,6 +40,7 @@ def assert_baseline(repo: Repository):
 def apply_baseline(repo: Repository, org: Organization):
     request = HandlerRequest(repository=repo, data=deepcopy(BASELINE), organization=org)
     teams.apply(request)
+    baseline_wait()
 
     assert_baseline(repo)
 
