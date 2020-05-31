@@ -5,6 +5,9 @@ inputs:
     github-token:
         description: GitHub authentication token
         required: true
+    github-repository:
+        description: GitHub repository to update
+        required: false
     config-file:
         description: Location of config file in repo
         default: .github/settings.yml
