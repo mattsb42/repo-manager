@@ -10,7 +10,7 @@ from github.Organization import Organization
 from github.Permissions import Permissions
 from github.Repository import Repository
 
-from .exceptions import RepoAdminError
+from .exceptions import RepoAdminError, UserConfigError
 
 __all__ = (
     "load_inputs",
@@ -20,6 +20,7 @@ __all__ = (
     "permission_to_string",
     "HandlerRequest",
 )
+_NOT_SET = object()
 
 
 @dataclass
@@ -51,16 +52,31 @@ class Inputs:
     debug: bool
 
 
+def _load_from_environment(*names: str, kind: str, default: str = _NOT_SET) -> str:
+    """Return the first environment variable value that is set and not empty."""
+    for name in names:
+        value = os.environ.get(name, None)
+        if value:
+            return value
+
+    if default is not _NOT_SET:
+        return default
+
+    raise UserConfigError(f"{kind} not set")
+
+
 def load_inputs() -> Inputs:
     """Load the input values from environment variables."""
-    token = os.environ["INPUT_GITHUB-TOKEN"]
-    config = os.environ.get("INPUT_CONFIG-FILE", ".github/settings.yml")
-    debug = bool(os.environ.get("INPUT_DEBUG", ""))
+    token = _load_from_environment("INPUT_GITHUB-TOKEN", kind="GitHub Token")
+    config = _load_from_environment(
+        "INPUT_CONFIG-FILE", kind="Config Filename", default=".github/settings.yml"
+    )
+    debug_raw = _load_from_environment("INPUT_DEBUG", kind="Debug Flag", default="false")
     return Inputs(
         agithub=GitHub(token=token, paginate=True),
         github=Github(token),
         config_file=config,
-        debug=debug,
+        debug=debug_raw == "true",
     )
 
 
@@ -74,8 +90,15 @@ class RepoContext:
 
 def load_context() -> RepoContext:
     """Load the repository context from environment variables."""
-    raw_repo = os.environ.get("INPUT_GITHUB-REPOSITORY", os.environ["GITHUB_REPOSITORY"])
-    owner, repo = raw_repo.split("/", 1)
+    raw_repo = _load_from_environment(
+        "INPUT_GITHUB-REPOSITORY", "GITHUB_REPOSITORY", kind="Repository name"
+    )
+
+    try:
+        owner, repo = raw_repo.split("/", 1)
+    except ValueError:
+        raise UserConfigError(f"Invalid repository name '{raw_repo}'")
+
     return RepoContext(owner=owner, repo=repo)
 
 
