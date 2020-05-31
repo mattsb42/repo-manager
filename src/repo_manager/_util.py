@@ -74,7 +74,7 @@ class RepoContext:
 
 def load_context() -> RepoContext:
     """Load the repository context from environment variables."""
-    raw_repo = os.environ["GITHUB_REPOSITORY"]
+    raw_repo = os.environ.get("INPUT_GITHUB-REPOSITORY", os.environ["GITHUB_REPOSITORY"])
     owner, repo = raw_repo.split("/", 1)
     return RepoContext(owner=owner, repo=repo)
 
