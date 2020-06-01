@@ -45,7 +45,7 @@ def get_requirements():
 INSTALL_REQUIRES, DEPENDENCY_LINKS = get_requirements()
 
 setup(
-    name="repo-manager",
+    name="github-repo-manager",
     version=get_version(),
     packages=find_packages("src"),
     package_dir={"": "src"},
