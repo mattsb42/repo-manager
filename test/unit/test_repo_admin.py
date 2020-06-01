@@ -54,7 +54,7 @@ def test_debug_from_cli(patch_actors, patch_logging):
 
 
 def test_debug_from_environment(patch_actors, patch_logging, monkeypatch):
-    monkeypatch.setenv("INPUT_DEBUG", "foo")
+    monkeypatch.setenv("INPUT_DEBUG", "true")
     repo_manager.cli([])
 
     repo_manager.logging.getLogger.return_value.setLevel.assert_called_once_with(
@@ -63,7 +63,7 @@ def test_debug_from_environment(patch_actors, patch_logging, monkeypatch):
 
 
 def test_debug_from_environment_and_cli(patch_actors, patch_logging, monkeypatch):
-    monkeypatch.setenv("INPUT_DEBUG", "foo")
+    monkeypatch.setenv("INPUT_DEBUG", "true")
     repo_manager.cli(["-v"])
 
     repo_manager.logging.getLogger.return_value.setLevel.assert_called_once_with(
