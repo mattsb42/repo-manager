@@ -55,6 +55,7 @@ setup(
     maintainer="Matt Bullock",
     description="repo-manager",
     long_description=read("README.md"),
+    long_description_content_type="text/markdown",
     keywords="repo-manager repo_manager",
     data_files=["README.md", "CHANGELOG.md", "LICENSE", "requirements.txt"],
     license="Apache 2.0",
