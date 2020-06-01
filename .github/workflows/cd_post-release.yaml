@@ -1,0 +1,39 @@
+# This workflow performs CD tasks after a release has been published.
+name: post-release tasks
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-pypi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade -r ci-requirements.txt
+      - name: publish to test-PyPI
+        env:
+          TOXENV: test-release
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: tox -- -vv
+  pypi:
+    needs: test-pypi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade -r ci-requirements.txt
+      - name: publish to PyPI
+        env:
+          TOXENV: release
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: tox -- -vv

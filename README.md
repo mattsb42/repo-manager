@@ -38,7 +38,7 @@ The [built-in GitHub Actions token][github actions token] will not work.**
 To use `repo-manager`, simply define a step in your workflow, providing your GitHub Token.
 
 ```yaml
-- uses: mattsb42/repo-manager@master
+- uses: mattsb42/repo-manager@v1
   with:
     github-token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
 ```
@@ -48,7 +48,7 @@ If you want to enable debug logging or use a special config file location,
 you indicate that with the other input values.
 
 ```yaml
-- uses: mattsb42/repo-manager@master
+- uses: mattsb42/repo-manager@v1
   with:
     github-token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
     config-file: .github/config/repository.yaml
